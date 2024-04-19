@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Welcomepage from './Pages/welcomePage';
+//import Welcomepage from './welcomePage';
+import Homepage from './HomePage';
+import PendingLicenses from './Pendinglicenses';
 
 import {
   createBrowserRouter,
@@ -10,7 +12,7 @@ import {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Welcomepage/>,
+    element: <PendingLicenses/>,
   },
 ]);
 
