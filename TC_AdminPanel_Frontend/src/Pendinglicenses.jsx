@@ -1,6 +1,35 @@
+import { useState } from 'react';
 import React from "react";
+import Modal from 'react-modal';
+
+const PopupComponent = ({ isOpen, onClose }) => {
+  return (
+    <Modal style={styles.popupcontainer} isOpen={isOpen} onRequestClose={onClose}>
+        <div style={styles.popupcontainerhead}><h2>Reason of rejection</h2></div>
+        <div><button style={styles.popupcontainerbutton}>Bad quality</button></div>
+        <div><button style={styles.popupcontainerbutton}>Expired license</button></div>
+        <div><button style={styles.popupcontainerbutton}>Incomplete photo</button></div>
+        <div style={{display: 'flex',justifyContent:'center'}}><label htmlFor={1}>other reason</label></div>
+        <div style={styles.popupcontainerbutton}><input type="text"/></div>
+        <div style={styles.popupcontainerbutton}>
+          <button style={{margin: '5px'}} onClick={onClose}>Submit</button>
+          <button style={{margin: '5px'}} onClick={onClose}>Close</button>
+        </div>
+    </Modal>
+  );
+};
 
 const Request = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
   return (
     <div style={styles.request}>
       <div>
@@ -11,7 +40,8 @@ const Request = () => {
       </div>
       <div>
         <button style={styles.accept}>Accept</button>
-        <button style={styles.decline}>Decline</button>
+        <button onClick={openPopup} style={styles.decline}>Decline</button>
+        <PopupComponent isOpen={isPopupOpen} onClose={closePopup} style={styles.popupcontainer}/>
       </div>
     </div>
   );
@@ -124,6 +154,27 @@ const styles = {
     padding: '5px 10px',
     borderRadius: '5px',
     marginRight: '15px',
+  },
+  popupcontainer: {
+    content: {
+      width: '200px', // Adjust the width as needed
+      height: '250px', // Adjust the height as needed
+      margin: 'auto', // Center the modal horizontally
+    }
+  },
+  popupcontainerbutton:{
+    alignSelf: 'center',
+    justifyContent: 'center',
+    margin: '5px',
+    display: 'flex',
+    width: '95%',
+  },
+  popupcontainerhead:{
+    justifyContent: 'center',
+    alignSelf: 'center',
+    display: 'flex',
+    fontSize: '12px',
+
   },
 };
 
