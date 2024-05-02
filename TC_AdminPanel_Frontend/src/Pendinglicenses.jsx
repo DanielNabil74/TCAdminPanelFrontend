@@ -1,59 +1,77 @@
 import { useState } from 'react';
 import React from "react";
 import Modal from 'react-modal';
-
-const PopupComponent = ({ isOpen, onClose }) => {
-  return (
-    <Modal style={styles.popupcontainer} isOpen={isOpen} onRequestClose={onClose}>
-        <div style={styles.popupcontainerhead}><h2>Reason of rejection</h2></div>
-        <div><button style={styles.popupcontainerbutton}>Bad quality</button></div>
-        <div><button style={styles.popupcontainerbutton}>Expired license</button></div>
-        <div><button style={styles.popupcontainerbutton}>Incomplete photo</button></div>
-        <div style={{display: 'flex',justifyContent:'center'}}><label htmlFor={1}>other reason</label></div>
-        <div style={styles.popupcontainerbutton}><input type="text"/></div>
-        <div style={styles.popupcontainerbutton}>
-          <button style={{margin: '5px'}} onClick={onClose}>Submit</button>
-          <button style={{margin: '5px'}} onClick={onClose}>Close</button>
-        </div>
-    </Modal>
-  );
-};
-
-const Request = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const openPopup = () => {
-    setIsPopupOpen(true);
-  };
-
-  const closePopup = () => {
-    setIsPopupOpen(false);
-  };
-
-  return (
-    <div style={styles.request}>
-      <div>
-        <text style={styles.name}>Tour guide name: John Doe</text>
-      </div>
-      <div style={styles.licenseimage}>
-        <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/>
-      </div>
-      <div>
-        <button style={styles.accept}>Accept</button>
-        <button onClick={openPopup} style={styles.decline}>Decline</button>
-        <PopupComponent isOpen={isPopupOpen} onClose={closePopup} style={styles.popupcontainer}/>
-      </div>
-    </div>
-  );
-};
-
+import {useNavigate} from "react-router-dom"
 
 
 const PendingLicenses = () => {
+    const PopupComponent = ({ isOpen, onClose }) => {
+      return (
+        <Modal style={styles.popupcontainer} isOpen={isOpen} onRequestClose={onClose}>
+            <div style={styles.popupcontainerhead}><h2>Reason of rejection</h2></div>
+            <div><button style={styles.popupcontainerbutton}>Bad quality</button></div>
+            <div><button style={styles.popupcontainerbutton}>Expired license</button></div>
+            <div><button style={styles.popupcontainerbutton}>Incomplete photo</button></div>
+            <div style={{display: 'flex',justifyContent:'center'}}><label htmlFor={1}>other reason</label></div>
+            <div style={styles.popupcontainerbutton}><input type="text"/></div>
+            <div style={styles.popupcontainerbutton}>
+              <button style={{margin: '5px'}} onClick={onClose}>Submit</button>
+              <button style={{margin: '5px'}} onClick={onClose}>Close</button>
+            </div>
+        </Modal>
+      );
+    };
+    
+    const Request = () => {
+      const [isPopupOpen, setIsPopupOpen] = useState(false);
+    
+      const openPopup = () => {
+        setIsPopupOpen(true);
+      };
+    
+      const closePopup = () => {
+        setIsPopupOpen(false);
+      };
+    
+      return (
+        <div style={styles.request}>
+          <div>
+            <text style={styles.name}>Tour guide name: John Doe</text>
+          </div>
+          <div style={styles.licenseimage}>
+            <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/>
+          </div>
+          <div>
+            <button style={styles.accept}>Accept</button>
+            <button onClick={openPopup} style={styles.decline}>Decline</button>
+            <PopupComponent isOpen={isPopupOpen} onClose={closePopup} style={styles.popupcontainer}/>
+          </div>
+        </div>
+      );
+    };
+
+    const nav=useNavigate();
+
+    const handleAccept = () => {
+
+    };
+    const handleDecline = () => {
+      
+    };
+    const handlNext = () => {
+      
+    };
+    const handlPrevious = () => {
+      
+    };
+    const handlHome = () => {
+      nav("/home")
+    };
+
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>
-        <button style={styles.homeButton}>Home</button>
+        <button style={styles.homeButton} onClick={handlHome}>Home</button>
         <label style={styles.pagename}>Pending licenses</label>
         <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
       </div>

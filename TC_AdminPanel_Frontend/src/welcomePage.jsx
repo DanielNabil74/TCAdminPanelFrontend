@@ -1,6 +1,17 @@
 import React from "react";
+import {useNavigate} from "react-router-dom"
+
+
 
 const Welcomepage = () => {
+  
+  const nav = useNavigate();
+
+
+  const handleLogin=() => {
+    nav("/home")
+  };
+
   return (
     <div style={styles.container}>
       <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
@@ -16,7 +27,7 @@ const Welcomepage = () => {
       <div style={styles.textentry}>
         <input type="password" />
       </div>
-      <button style={styles.loginbutton}>login</button>
+      <button style={styles.loginbutton} onClick={() => handleLogin()}>login</button>
     </div>
   );
 };

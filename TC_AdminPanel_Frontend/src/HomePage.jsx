@@ -1,4 +1,20 @@
 import React from "react";
+import {useNavigate} from "react-router-dom"
+
+const Homepage = () => {
+  const nav = useNavigate();
+
+const handlePendingreq = () => {
+  nav("/PendingLicenses")
+};
+
+const handleMuseumInfo = () => {
+  nav('/MuseumInfo')
+};
+
+const handleIndoorLoc = () => {
+  nav('/IndoorLocMain')
+};
 
 const Lefthalf = () => {
   return (
@@ -12,16 +28,14 @@ const Lefthalf = () => {
 const Righthalf = () => {
   return (
     <div style={styles.righthalf}>
-      <button style={styles.button}>Pending licenses</button>
-      <button style={styles.button}>Museum info</button>
-      <button style={styles.button}>Indoor localization management</button>
+      <button style={styles.button} onClick={handlePendingreq}>Pending licenses</button>
+      <button style={styles.button} onClick={handleMuseumInfo}>Museum info</button>
+      <button style={styles.button} onClick={handleIndoorLoc}>Indoor localization management</button>
     </div>
   );
 };;
-//export default Lefthalf;
 
 
-const Homepage = () => {
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>

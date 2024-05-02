@@ -1,75 +1,83 @@
 import { useState } from 'react';
 import React from "react";
 import Modal from 'react-modal';
-
-const PopupComponent = ({ isOpen, onClose }) => {
-  return (
-    <Modal style={styles.popupcontainer} isOpen={isOpen} onRequestClose={onClose}>
-        <div style={styles.popupcontainerhead}><text style={styles.popupcontainerhead}>Are you sure you want to delete this museum?</text></div>
-        <div style={styles.popupcontainerbutton}>
-          <button style={{margin: '5px', backgroundColor: '#860000',color: 'white'}} onClick={onClose}>Yes</button>
-          <button style={{margin: '5px', backgroundColor: '#008636',color: 'white'}} onClick={onClose}>No</button>
-        </div>
-    </Modal>
-  );
-};
-
-const Request = () => {
-  
-  return (
-    <div style={styles.request}>
-      <div style={styles.field}>
-        <label style={{fontWeight:'bold',marginRight:'5px'}}>Museum name:</label>
-        <label>Pyramids</label>
-      </div>
-      <div style={styles.field}>
-        <label style={{fontWeight:'bold',marginRight:'5px'}}>Tickets prices:</label>
-        <label style={styles.prices}>Foreign: 100$</label>
-        <label style={styles.prices}>Egyptian adult: 50 EGP</label>
-        <label style={styles.prices}>Egyptian student: 10 EGP</label>
-      </div>
-      <div style={styles.field}>
-        <div style={styles.name}><label>Museum info: </label></div>
-        <div style={styles.infoentry}><text>The Egyptian pyramids are ancient masonry structures located in Egypt. Sources cite at least 118 identified "Egyptian" pyramids. Approximately 80 pyramids were built within the Kingdom of Kush, now located in the modern country of Sudan. Of those located in modern Egypt, most were built as tombs for the country's pharaohs and their consorts during the Old and Middle Kingdom periods.</text>
-        </div>
-      </div>
-      <div style={styles.field}>
-        <div style={styles.photos}>
-          <div>
-            <label style={styles.name}>Museum photo: </label>
-            <img style={styles.image} src='./images/sample.png'/>
-          </div>
-
-          <div>
-            <label style={styles.name}>Museum map: </label>
-            <img style={styles.image} src='./images/sample.png'/>
-          </div>
-        </div>
-        <div>
-
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
+import { useNavigate } from 'react-router-dom';
 
 const Museum = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const PopupComponent = ({ isOpen, onClose }) => {
+      return (
+        <Modal style={styles.popupcontainer} isOpen={isOpen} onRequestClose={onClose}>
+            <div style={styles.popupcontainerhead}><text style={styles.popupcontainerhead}>Are you sure you want to delete this museum?</text></div>
+            <div style={styles.popupcontainerbutton}>
+              <button style={{margin: '5px', backgroundColor: '#860000',color: 'white'}} onClick={handleDelete}>Yes</button>
+              <button style={{margin: '5px', backgroundColor: '#008636',color: 'white'}} onClick={onClose}>No</button>
+            </div>
+        </Modal>
+      );
+    };
+    
+    const Request = () => {
+      
+      return (
+        <div style={styles.request}>
+          <div style={styles.field}>
+            <label style={{fontWeight:'bold',marginRight:'5px'}}>Museum name:</label>
+            <label>Pyramids</label>
+          </div>
+          <div style={styles.field}>
+            <label style={{fontWeight:'bold',marginRight:'5px'}}>Tickets prices:</label>
+            <label style={styles.prices}>Foreign: 100$</label>
+            <label style={styles.prices}>Egyptian adult: 50 EGP</label>
+            <label style={styles.prices}>Egyptian student: 10 EGP</label>
+          </div>
+          <div style={styles.field}>
+            <div style={styles.name}><label>Museum info: </label></div>
+            <div style={styles.infoentry}><text>The Egyptian pyramids are ancient masonry structures located in Egypt. Sources cite at least 118 identified "Egyptian" pyramids. Approximately 80 pyramids were built within the Kingdom of Kush, now located in the modern country of Sudan. Of those located in modern Egypt, most were built as tombs for the country's pharaohs and their consorts during the Old and Middle Kingdom periods.</text>
+            </div>
+          </div>
+          <div style={styles.field}>
+            <div style={styles.photos}>
+              <div>
+                <label style={styles.name}>Museum photo: </label>
+                <img style={styles.image} src='./images/sample.png'/>
+              </div>
+    
+              <div>
+                <label style={styles.name}>Museum map: </label>
+                <img style={styles.image} src='./images/sample.png'/>
+              </div>
+            </div>
+            <div>
+    
+            </div>
+          </div>
+        </div>
+      );
+    };
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const openPopup = () => {
-    setIsPopupOpen(true);
-  };
+    const openPopup = () => {
+      setIsPopupOpen(true);
+    };
 
-  const closePopup = () => {
-    setIsPopupOpen(false);
-  };
+    const closePopup = () => {
+      setIsPopupOpen(false);
+    };
+    const nav = useNavigate();
 
+    const handleHome = () => {
+      nav("/home")
+    };
+    const handleEdit = () => {
+      nav("/AddMuseum")
+    };
+    const handleDelete = () => {
+    //  nav("/home")
+    };
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>
-        <button style={styles.homeButton}>Home</button>
+        <button style={styles.homeButton} onClick={handleHome}>Home</button>
         <label style={styles.pagename}>Pyramids</label>
         <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
       </div>
@@ -78,7 +86,7 @@ const Museum = () => {
       </div>
       <div style={styles.Bottombar}>
         <div>
-          <button style={styles.Edit}>Edit</button>
+          <button style={styles.Edit} onClick={handleEdit}>Edit</button>
           <button onClick={openPopup} style={styles.cancel}>Delete</button>
           <PopupComponent isOpen={isPopupOpen} onClose={closePopup} style={styles.popupcontainer}/>
         </div>

@@ -1,52 +1,56 @@
 import { useState } from 'react';
 import React from "react";
 import Modal from 'react-modal';
-
-const Request = () => {
-
-  return (
-    <div style={styles.request}>
-      <div style={styles.field}>
-        <label>Museum name: </label>
-        <input style={styles.nameentry}/>
-      </div>
-      <div style={styles.field}>
-        <label>Tickets prices:</label>
-        <input style={styles.prices} placeholder='Foreign'/>
-        <input style={styles.prices} placeholder='Egyptian adult'/>
-        <input style={styles.prices} placeholder='Egyptian student'/>
-      </div>
-      <div style={styles.field}>
-        <label style={styles.name}>Museum info: </label>
-        <textarea style={styles.infoentry}/>
-      </div>
-      <div style={styles.field}>
-        <div style={styles.photos}>
-          <div>
-            <label>Museum photo: </label>
-            <button>Attach file</button>
-          </div>
-
-          <div>
-            <label>Museum map: </label>
-            <button>Attach file</button>
-          </div>
-        </div>
-        <div>
-
-        </div>
-      </div>
-    </div>
-  );
-};
-
+import { useNavigate } from 'react-router-dom';
 
 
 const Addmuseum = () => {
+    const Request = () => {
+
+      return (
+        <div style={styles.request}>
+          <div style={styles.field}>
+            <label>Museum name: </label>
+            <input style={styles.nameentry}/>
+          </div>
+          <div style={styles.field}>
+            <label>Tickets prices:</label>
+            <input style={styles.prices} placeholder='Foreign'/>
+            <input style={styles.prices} placeholder='Egyptian adult'/>
+            <input style={styles.prices} placeholder='Egyptian student'/>
+          </div>
+          <div style={styles.field}>
+            <label style={styles.name}>Museum info: </label>
+            <textarea style={styles.infoentry}/>
+          </div>
+          <div style={styles.field}>
+            <div style={styles.photos}>
+              <div>
+                <label>Museum photo: </label>
+                <button>Attach file</button>
+              </div>
+    
+              <div>
+                <label>Museum map: </label>
+                <button>Attach file</button>
+              </div>
+            </div>
+            <div>
+    
+            </div>
+          </div>
+        </div>
+      );
+    };
+    const nav = useNavigate();
+
+    const handleHome = () => {
+      nav("/home")
+    };
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>
-        <button style={styles.homeButton}>Home</button>
+        <button style={styles.homeButton} onClick={handleHome}>Home</button>
         <label style={styles.pagename}>Add museum</label>
         <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
       </div>

@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import {useNavigate} from "react-router-dom"
 
 
-const Museuminfo = () => {
+const IndoorLocMain = () => {
     const Pressable = ({ onPress, children }) => {
       const handlePress = () => {
         if (onPress) {
@@ -22,25 +22,24 @@ const Museuminfo = () => {
     const nav = useNavigate();
 
     const handleMuseum = () => {
-      nav("/Museum")
+      nav("/IndoorLocMuseum")
+    };
+    const handleMuseumNot = () => {
+      nav("/IndoorLocMuseumNot")
     };
     const handleHome = () => {
       nav("/home")
-    };
-    const handleAdd = () => {
-      nav("/AddMuseum")
     };
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>
         <button style={styles.homeButton} onClick={handleHome}>Home</button>
-        <label style={styles.pagename}>Museum info</label>
+        <label style={styles.pagename}>Indoor localization management</label>
         <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
       </div>
 
       <div style={styles.firstline}>
           <div style={styles.searchbar}><input placeholder='search'/></div>
-          <div style={styles.addButtonContainer}><button style={styles.addbutton} onClick={handleAdd}>Add</button></div>
       </div>
 
       <div style={styles.Bottombar}>
@@ -51,7 +50,7 @@ const Museuminfo = () => {
               <text style={styles.museumname}> Grand Egyptian museum</text>
               </button>
           </Pressable>
-          <Pressable style={styles.museumContainer} onPress={handleMuseum}>
+          <Pressable style={styles.museumContainer} onPress={handleMuseumNot}>
             <button style={styles.museumContainer}>
               <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/> 
               <text style={styles.museumname}> Pyramids </text>
@@ -193,4 +192,4 @@ const styles = {
   },
 };
 
-export default Museuminfo;
+export default IndoorLocMain;
