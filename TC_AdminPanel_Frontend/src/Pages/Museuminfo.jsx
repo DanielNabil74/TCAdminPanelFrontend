@@ -1,76 +1,85 @@
-import { useState } from 'react';
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import server from '../elserver';
 
+const Museuminfo = () => {
+  const [museums, setMuseums] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
 
-const IndoorLocMain = () => {
-    const Pressable = ({ onPress, children }) => {
-      const handlePress = () => {
-        if (onPress) {
-          onPress();
+  const nav = useNavigate();
+
+  useEffect(() => {
+    const fetchMuseums = async () => {
+      try {
+        const response = await fetch(`${server}/museums`); 
+        if (response.ok) {
+          const data = await response.json();
+          setMuseums(data);
+        } else {
+          console.error('Failed to fetch museums:', response.statusText);
         }
-      };
-    
-      return (
-        <div onClick={handlePress} style={{ cursor: 'pointer' }}>
-          {children}
-        </div>
-      );
+      } catch (error) {
+        console.error('Error fetching museums:', error);
+      }
     };
 
-    const nav = useNavigate();
+    fetchMuseums();
+  }, []); 
 
-    const handleMuseum = () => {
-      nav("/IndoorLocMuseum")
-    };
-    const handleMuseumNot = () => {
-      nav("/IndoorLocMuseumNot")
-    };
-    const handleHome = () => {
-      nav("/home")
-    };
+  const handleMuseum = (museumId) => {
+    nav(`/Museum`);
+  };
+
+  const handleHome = () => {
+    nav("/home");
+  };
+
+  const handleAdd = () => {
+    nav("/AddMuseum");
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`${server}/searchMuseum/${searchInput}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMuseums(data.museums);
+      } else {
+        console.error('Failed to fetch search results:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.topbar}>
         <button style={styles.homeButton} onClick={handleHome}>Home</button>
-        <label style={styles.pagename}>Indoor localization management</label>
+        <label style={styles.pagename}>Museum info</label>
         <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
       </div>
 
       <div style={styles.firstline}>
-          <div style={styles.searchbar}><input placeholder='search'/></div>
+        <div style={styles.searchbar}>
+          <input
+            placeholder='Search'
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
+        <div style={styles.addButtonContainer}><button style={styles.addbutton} onClick={handleAdd}>Add</button></div>
       </div>
 
       <div style={styles.Bottombar}>
-        <div style={{display: 'flex', width:'100%'}}>
-          <Pressable style={styles.museumContainer} onPress={handleMuseum}>
-            <button style={styles.museumContainer}>
-              <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/> 
-              <text style={styles.museumname}> Grand Egyptian museum</text>
-              </button>
-          </Pressable>
-          <Pressable style={styles.museumContainer} onPress={handleMuseumNot}>
-            <button style={styles.museumContainer}>
-              <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/> 
-              <text style={styles.museumname}> Pyramids </text>
-              </button>
-          </Pressable>
-        </div>
-        <div style={{display: 'flex', width:'100%'}}>
-          <Pressable style={styles.museumContainer} onPress={handleMuseum}>
-            <button style={styles.museumContainer}>
-              <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/> 
-              <text style={styles.museumname}> Coptic museum</text>
-              </button>
-          </Pressable>
-          <Pressable style={styles.museumContainer} onPress={handleMuseum}>
-            <button style={styles.museumContainer}>
-              <img style={styles.licenseimage} src={"./images/sample.png"} alt='sample image'/> 
-              <text style={styles.museumname}> National museum of Egyptian civilizations </text>
-              </button>
-          </Pressable>
-        </div>
+        {museums.map((museum) => (
+          <div key={museum.musid} style={styles.museumContainer} onClick={() => handleMuseum(museum.musid)}>
+            <img style={styles.licenseimage} src={server + '/' + museum.musuem_image || "../../images/sample.png"} alt='sample image' />
+            <text style={styles.museumname}>{museum.museum_name}</text>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -192,4 +201,4 @@ const styles = {
   },
 };
 
-export default IndoorLocMain;
+export default Museuminfo;
