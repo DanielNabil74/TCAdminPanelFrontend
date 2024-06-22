@@ -1,13 +1,14 @@
 import React from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate} from "react-router-dom"
 
+import { name } from "./welcomePage";
 const Homepage = () => {
   const nav = useNavigate();
+  localStorage.setItem("username",name)
 
 const handlePendingreq = () => {
   nav("/PendingLicenses")
 };
-
 const handleMuseumInfo = () => {
   nav('/MuseumInfo')
 };
@@ -20,7 +21,7 @@ const Lefthalf = () => {
   return (
     <div style={styles.lefthalf}>
       <h1>Welcome</h1>
-      <h1 style={styles.username}>John Doe</h1>
+      <h1 style={styles.username}>{name}</h1>
     </div>
   );
 };

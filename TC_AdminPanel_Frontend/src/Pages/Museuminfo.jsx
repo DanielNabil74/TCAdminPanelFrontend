@@ -28,7 +28,7 @@ const Museuminfo = () => {
   }, []); 
 
   const handleMuseum = (museumId) => {
-    nav(`/Museum`);
+    nav(`/Museum/${museumId}`,{museumId});
   };
 
   const handleHome = () => {

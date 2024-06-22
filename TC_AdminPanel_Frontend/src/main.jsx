@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<Addmuseum />} />,
   },
   {
-    path: '/Museum',
+    path: '/Museum/:musid',
     element: <ProtectedRoute element={<Museum />} />,
   },
   {

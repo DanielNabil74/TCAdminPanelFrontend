@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import server from "../elserver";
 
+export let name 
 const Welcomepage = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -9,7 +10,7 @@ const Welcomepage = () => {
 
   const handleLogin = async () => {
     const payload = { id, password };
-
+  
     try {
       const response = await fetch(`${server}/login`, {
         method: "POST",
@@ -18,14 +19,14 @@ const Welcomepage = () => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         console.log("Login successful:", result);
-
+  
         localStorage.setItem("token", result.token);
-
-        nav("/home", { replace: true });
+        name = result.value.name
+        nav(`/home`, {replace: true });
       } else {
         const error = await response.json();
         console.error("Login failed:", error.message);
@@ -34,6 +35,7 @@ const Welcomepage = () => {
       console.error("An error occurred:", error);
     }
   };
+  
 
   return (
     <div style={styles.container}>
