@@ -45,7 +45,7 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<IndoorLocMain />} />,
   },
   {
-    path: '/IndoorLocMuseum',
+    path: '/IndoorLocMuseum/:museum_name',
     element: <ProtectedRoute element={<IndoorLocMuseum />} />,
   },
   {

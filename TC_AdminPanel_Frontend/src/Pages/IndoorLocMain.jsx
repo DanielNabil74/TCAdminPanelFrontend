@@ -26,8 +26,8 @@ const IndoorLocMain = () => {
     fetchMuseums();
   }, []); 
 
-  const handleMuseum = () => {
-    nav(`/IndoorLocMuseum`);
+  const handleMuseum = (musuem_name) => {
+    nav(`/IndoorLocMuseum/${musuem_name}`,{ state: { musuem_name } });
   };
 
   const handleSearch = async () => {
@@ -65,7 +65,10 @@ const IndoorLocMain = () => {
 
       <div style={styles.Bottombar}>
         {museums.map((museum) => (
-          <div key={museum.musid} style={styles.museumContainer} onClick={() => handleMuseum()}>
+          <div key={museum.musid} style={styles.museumContainer} 
+          onClick={async () =>{
+            handleMuseum(museum.musuem_name)
+          }}>
             <img style={styles.licenseimage} src={server + '/' + museum.musuem_image || "../../images/sample.png"} alt='sample image' />
             <text style={styles.museumname}>{museum.museum_name}</text>
           </div>
