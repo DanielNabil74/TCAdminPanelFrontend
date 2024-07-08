@@ -85,6 +85,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+    
     //alignSelf: 'center',
   //  verticalAlign: 'center',
   },
@@ -128,8 +129,13 @@ const styles = {
     alignItems: 'center',
   },
   Bottombar: {
-    height: '100px',
+   // height: '100px',
+   // width: '100vh',
+    flexDirection:'row',
     marginTop: '10px',
+    display: 'flex',
+    width: '100%',
+    flexWrap: 'wrap',
   },
   request: {
     display: 'flex',
@@ -151,13 +157,16 @@ const styles = {
     margin: '5px',
   },
   museumContainer: {
-    width: '100vh',
+    width: '440px',
     alignItems: 'center',
     display: 'flex',
+    flexDirection: 'row',
     height: '100px',
     cursor: 'pointer',
    // justifyContent: 'center',
     margin: '3px',
+    backgroundColor: '#E0DDDD',
+    borderRadius: '5px',
    // borderRadius: '5px',
   //  border: '0px'
   },
