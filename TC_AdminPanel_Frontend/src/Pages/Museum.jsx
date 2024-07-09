@@ -28,7 +28,7 @@ const Museum = () => {
   };
 
   const handleEdit = () => {
-    nav("/AddMuseum");
+    nav(`/EditMuseum/${musid}`,{musid});
   };
 
   const handleDelete = async () => {
@@ -52,7 +52,7 @@ const Museum = () => {
     <div style={styles.container}>
       <div style={styles.topbar}>
         <button style={styles.homeButton} onClick={handleHome}>Home</button>
-        <label style={styles.pagename}>{museumData ? museumData.museum_name : ''}</label>
+        {museumData && <label style={styles.pagename}>{museumData.museum_name}</label>}
         <img style={styles.logoimage} src={"../../images/Logo.png"} alt='first image'/>
       </div>
       <div>
@@ -64,23 +64,27 @@ const Museum = () => {
             </div>
             <div style={styles.field}>
               <label style={{ fontWeight: 'bold', marginRight: '5px' }}>Tickets prices:</label>
-              <label style={styles.prices}>Foreign: {museumData.ticket_tourist}</label>
-              <label style={styles.prices}>Egyptian adult: {museumData.ticket_adult}</label>
-              <label style={styles.prices}>Egyptian student: {museumData.ticket_student}</label>
+              {museumData.ticket_tourist && <label style={styles.prices}>Foreign: {museumData.ticket_tourist}</label>}
+              {museumData.ticket_adult && <label style={styles.prices}>Egyptian adult: {museumData.ticket_adult}</label>}
+              {museumData.ticket_student && <label style={styles.prices}>Egyptian student: {museumData.ticket_student}</label>}
             </div>
             <div style={styles.field}>
               <div style={styles.name}><label>Museum info:</label></div>
-              <div style={styles.infoentry}><text>{museumData.museinfo}</text></div>
+              {museumData.museinfo && <div style={styles.infoentry}><text>{museumData.museinfo}</text></div>}
             </div>
             <div style={styles.field}>
               <div style={styles.photos}>
                 <div>
-                  <label style={styles.name}>Museum photo:</label>
-                  <img style={styles.image} src={`${server}/${museumData.musuem_image}`} alt='Museum photo'/>
+                  {museumData.musuem_image && <>
+                    <label style={styles.name}>Museum photo:</label>
+                    <img style={styles.image} src={`${server}/${museumData.musuem_image}`} alt='Museum photo'/>
+                  </>}
                 </div>
                 <div>
-                  <label style={styles.name}>Museum map:</label>
-                  <img style={styles.image} src={`${server}/${museumData.map}`} alt='Museum map'/>
+                  {museumData.map && <>
+                    <label style={styles.name}>Museum map:</label>
+                    <img style={styles.image} src={`${server}/${museumData.map}`} alt='Museum map'/>
+                  </>}
                 </div>
               </div>
             </div>
@@ -90,7 +94,7 @@ const Museum = () => {
       <div style={styles.Bottombar}>
         <div>
           <button style={styles.Edit} onClick={handleEdit}>Edit</button>
-          <button style={{...styles.Edit,backgroundColor:"red"}} onClick={handleDelete}>Delete</button>
+          <button style={{...styles.Edit, backgroundColor: "red"}} onClick={handleDelete}>Delete</button>
         </div>
       </div>
     </div>
@@ -163,7 +167,7 @@ const styles = {
   },
   field: {
     fontWeight: 'bold',
-    marginBottom: '5px',
+    margin: '15px',
     display: 'flex',
     flexDirection: 'row',
   },
@@ -174,10 +178,10 @@ const styles = {
     width: '536px',
     height: 'auto',
     marginLeft: '5px',
-    fontSize: '18px', 
+    fontSize: '18px',
   },
   image: {
-    width: '200px', 
+    width: '200px',
     height: 'auto',
   },
 };

@@ -14,6 +14,7 @@ import IndoorLocMain from './Pages/IndoorLocMain';
 import IndoorLocMuseum from './Pages/IndoorLocMuseum';
 import IndoorLocMuseumNot from './Pages/IndoorLocMuseumNot';
 import ProtectedRoute from './ProtectedRoute';
+import EditMuseum from './Pages/EditMuseum';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
     path: '/IndoorLocMuseumNot',
     element: <ProtectedRoute element={<IndoorLocMuseumNot />} />,
   },
+  {
+    path: '/EditMuseum/:musid',
+    element: <ProtectedRoute element={<EditMuseum/>}/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

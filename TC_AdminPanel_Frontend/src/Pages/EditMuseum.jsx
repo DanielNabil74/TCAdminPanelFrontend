@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import server from '../elserver';
 
-const Addmuseum = () => {
+const EditMuseum = () => {
+  const { musid } = useParams();
   const nav = useNavigate();
   const [formData, setFormData] = useState({
     museum_name: '',
@@ -14,6 +15,28 @@ const Addmuseum = () => {
   });
   const [museumPhoto, setMuseumPhoto] = useState(null);
   const [museumMap, setMuseumMap] = useState(null);
+
+  useEffect(() => {
+    const fetchMuseumData = async () => {
+      try {
+        const response = await fetch(`${server}/museum/${musid}`);
+        const data = await response.json();
+
+        // Assuming data comes in the format you provided in the example
+        setFormData({
+          museum_name: data.value.museum_name,
+          ticket_tourist: data.value.ticket_tourist,
+          ticket_adult: data.value.ticket_adult,
+          ticket_student: data.value.ticket_student,
+          museinfo: data.value.museinfo,
+        });
+      } catch (error) {
+        console.error('Error fetching museum data:', error);
+      }
+    };
+
+    fetchMuseumData();
+  }, [musid]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,46 +58,49 @@ const Addmuseum = () => {
 
   const handleCancel = () => {
     if (window.confirm("Are you sure you want to exit?")) {
-      nav("/MuseumInfo");
+      nav(`/Museum/${musid}`, { musid });
     }
   };
 
-  const handleAdd = async () => {
-    if (window.confirm("Are you sure you want to add this museum?")) {
+  const handleEdit = async () => {
+    if (window.confirm("Are you sure you want to edit this museum?")) {
       try {
-        // Add Museum
-        const addMuseumResponse = await fetch(`${server}/addMuseum`, {
-          method: 'POST',
+        const editMuseumResponse = await fetch(`${server}/editMuseum/${formData.museum_name}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(formData),
         });
-        const addMuseumResult = await addMuseumResponse.json();
-        console.log('Add Museum Result:', addMuseumResult);
+        const editMuseumResult = await editMuseumResponse.json();
+        console.log('Edit Museum Result:', editMuseumResult);
 
         // Update Map
-        const mapFormData = new FormData();
-        mapFormData.append('image', museumMap);
-        const updateMapResponse = await fetch(`${server}/updateMap/${formData.museum_name}`, {
-          method: 'PUT',
-          body: mapFormData,
-        });
-        const updateMapResult = await updateMapResponse.text();
-        console.log('Update Map Result:', updateMapResult);
+        if (museumMap) {
+          const mapFormData = new FormData();
+          mapFormData.append('image', museumMap);
+          const updateMapResponse = await fetch(`${server}/updateMap/${formData.museum_name}`, {
+            method: 'PUT',
+            body: mapFormData,
+          });
+          const updateMapResult = await updateMapResponse.text();
+          console.log('Update Map Result:', updateMapResult);
+        }
 
         // Update Image
-        const imageFormData = new FormData();
-        imageFormData.append('image', museumPhoto);
-        const updateImageResponse = await fetch(`${server}/updateImage/${formData.museum_name}`, {
-          method: 'PUT',
-          body: imageFormData,
-        });
-        const updateImageResult = await updateImageResponse.text();
-        console.log('Update Image Result:', updateImageResult);
+        if (museumPhoto) {
+          const imageFormData = new FormData();
+          imageFormData.append('image', museumPhoto);
+          const updateImageResponse = await fetch(`${server}/updateImage/${formData.museum_name}`, {
+            method: 'PUT',
+            body: imageFormData,
+          });
+          const updateImageResult = await updateImageResponse.text();
+          console.log('Update Image Result:', updateImageResult);
+        }
 
-        alert('Museum added successfully!');
-        nav("/MuseumInfo");
+        alert('Museum edited successfully!');
+        nav(`/Museum/${musid}`, { musid });
       } catch (error) {
         console.error('Error:', error);
         alert('An error occurred. Check console for details.');
@@ -86,19 +112,14 @@ const Addmuseum = () => {
     <div style={styles.container}>
       <div style={styles.topbar}>
         <button style={styles.homeButton} onClick={handleHome}>Home</button>
-        <label style={styles.pagename}>Add museum</label>
-        <img style={styles.logoimage} src={"./images/Logo.png"} alt='first image'/>
+        <label style={styles.pagename}>Edit Museum</label>
+        <img style={styles.logoimage} src={"../../images/Logo.png"} alt='first image'/>
       </div>
       <div style={styles.request}>
-        <div style={styles.field}>
-          <label>Museum name: </label>
-          <input
-            name="museum_name"
-            style={styles.nameentry}
-            value={formData.museum_name}
-            onChange={handleChange}
-          />
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <label style={{ fontSize: '24px', fontWeight:"bold" }}>{formData.museum_name}</label>
+    </div>
+    
         <div style={styles.field}>
           <label>Tickets prices:</label>
           <input
@@ -147,7 +168,7 @@ const Addmuseum = () => {
       </div>
       <div style={styles.Bottombar}>
         <div>
-          <button style={styles.homeButton} onClick={handleAdd}>Add</button>
+          <button style={styles.homeButton} onClick={handleEdit}>Edit</button>
           <button style={styles.cancel} onClick={handleCancel}>Cancel</button>
         </div>
       </div>
@@ -215,7 +236,7 @@ const styles = {
   },
   field: {
     fontWeight: 'bold',
-    marginBottom: '5px',
+    marginBottom: '15px', 
   },
   prices: {
     margin: '5px',
@@ -224,9 +245,14 @@ const styles = {
     width: '528px',
   },
   infoentry: {
-    width: '536px',
-    height: '100px',
+    width: '100%', 
+    height: '150px',
+    padding: '10px', 
+    fontSize: '14px', 
+    borderRadius: '5px', 
+    border: '1px solid #ccc', 
+    resize: 'vertical', 
   },
 };
 
-export default Addmuseum;
+export default EditMuseum;
