@@ -5,6 +5,7 @@ import server from '../elserver';
 
 const IndoorLocMain = () => {
   const [museums, setMuseums] = useState([]);
+  const [id, setId] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const nav = useNavigate();
 
@@ -26,8 +27,8 @@ const IndoorLocMain = () => {
     fetchMuseums();
   }, []); 
 
-  const handleMuseum = (musuem_name) => {
-    nav(`/IndoorLocMuseum/${musuem_name}`,{ state: { musuem_name } });
+  const handleMuseum = (musid) => {
+    nav(`/IndoorLocMuseum/${musid}`,{ musid});
   };
 
   const handleSearch = async () => {
@@ -67,7 +68,7 @@ const IndoorLocMain = () => {
         {museums.map((museum) => (
           <div key={museum.musid} style={styles.museumContainer} 
           onClick={async () =>{
-            handleMuseum(museum.musuem_name)
+            handleMuseum(museum.musid)
           }}>
             <img style={styles.licenseimage} src={server + '/' + museum.musuem_image || "../../images/sample.png"} alt='sample image' />
             <text style={styles.museumname}>{museum.museum_name}</text>

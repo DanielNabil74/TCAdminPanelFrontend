@@ -1,86 +1,145 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import server from "../elserver";
+import "./styles.css";
 
 const IndoorLocMuseum = () => {
-  const {museum_name} = useParams()
-  const [museumUsers, setMuseumUsers] = useState(null);
-  const nav = useNavigate();
+  const { musid } = useParams();
+  const [museumName, setMuseumName] = useState(null);
+  const [museumUsers, setMuseumUsers] = useState([]);
+  const [newData, setNewData] = useState(false);
+  const navigate = useNavigate();
 
   const handleHome = () => {
-    nav("/home");
+    navigate("/home");
   };
+
+  useEffect(() => {
+    const getMuseumName = async () => {
+      try {
+        const response = await fetch(`${server}/museum/${musid}`);
+        const data = await response.json();
+        setMuseumName(data.value.museum_name);
+      } catch (error) {
+        console.error("Error fetching museum data:", error);
+      }
+    };
+    getMuseumName();
+  }, [musid]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(server + "/selectMuseum", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ museum_name: museum_name }),
+        const response = await fetch(server + `/selectMuseum/${museumName}`);
+        const data = await response.json();
+
+        const roomsResponse = await fetch(server + `/getRooms/${museumName}`);
+        const hashmap = await roomsResponse.json();
+
+        const roomMap = {};
+        hashmap.forEach((room) => {
+          roomMap[room.room_name] = room.location;
         });
 
-        if (response.ok) {
-          const result = await response.json();
-          setMuseumUsers(result);
-        } else {
-          console.error("Failed to fetch users");
-        }
+        const usersWithMatchedRooms = data.map((user) => {
+          const userLocation = user.location;
+          const matchedRoomName =
+            Object.keys(roomMap).find(
+              (roomName) => roomMap[roomName] === userLocation
+            ) || "No match";
+
+          return {
+            username: user.username,
+            role: user.role,
+            location: matchedRoomName,
+          };
+        });
+
+        setMuseumUsers(usersWithMatchedRooms);
+        setNewData(true);
       } catch (error) {
         console.error("Error fetching users:", error.message);
       }
     };
 
-    if (museum_name) {
+    if (museumName) {
       fetchUsers();
     }
-  }, [museum_name]);
+
+    const intervalId = setInterval(() => {
+      fetchUsers();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [museumName]);
+
+  useEffect(() => {
+    if (newData) {
+      const timeoutId = setTimeout(() => setNewData(false), 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [newData]);
 
   const Lefthalf = () => {
+    const userCount = museumUsers ? museumUsers.length : 0;
+
     return (
       <div style={styles.lefthalf}>
-        <div style={styles.field}>
-          <label style={{ fontWeight: "bold", marginRight: "5px" }}>
-            Main hall
-          </label>
-        </div>
-        <div style={styles.counters}>
-          <label style={styles.prices}>Count: 40</label>
-          <label style={styles.prices}>Avg capacity: 35</label>
-          <label style={styles.prices}>Max capacity: 70</label>
-          <label style={styles.prices}>Status: crowded</label>
-        </div>
-        <div style={styles.usersContainer}>
-          <h2> Users in {museum_name}</h2>
-          <table
-            style={{
-              width: "100%",
-              border: "1px solid black",
-              borderCollapse: "collapse",
-            }}
-          >
-            <thead>
-              <tr>
-                <th style={styles.username}>Username</th>
-                <th style={styles.username}>Role</th>
-                <th style={styles.username}>Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {museumUsers &&
-                museumUsers.users &&
-                museumUsers.users.map((user, index) => (
-                  <tr key={index}>
-                    <td style={styles.username}>{user.username}</td>
-                    <td style={styles.username}>{user.role}</td>
-                    <td style={styles.username}>{user.location}</td>
+        {museumName !== "The Great Cairo Library" ? (
+          <div style={styles.centeredContent}>
+          <h2>Indoor localization has not been enabled here yet</h2>
+            <button style={{...styles.greenButton,color:"#F1EBEB"}}>Add rooms</button>
+            <button style={styles.greenButton}>Enable</button>
+          </div>
+        ) : (
+          <>
+            <div style={styles.counters}>
+              <label style={styles.prices}>Count: {userCount}</label>
+              <label style={styles.prices}>Avg capacity: 35</label>
+              <label style={styles.prices}>Max capacity: 70</label>
+              <label style={styles.prices}>
+                Status: {userCount > 35 ? "crowded" : "normal"}
+              </label>
+            </div>
+            <div style={styles.usersContainer}>
+              <h2> Users in {museumName}</h2>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.cell}>Username</th>
+                    <th style={styles.cell}>Role</th>
+                    <th style={styles.cell}>Location</th>
                   </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <TransitionGroup component="tbody">
+                  {museumUsers && museumUsers.length > 0 ? (
+                    museumUsers.map((user, index) => (
+                      <CSSTransition key={index} timeout={500} classNames="row">
+                        <tr>
+                          <td style={styles.cell}>
+                            {user.username || "Unknown"}
+                          </td>
+                          <td style={styles.cell}>{user.role}</td>
+                          <td style={styles.cell}>{user.location}</td>
+                        </tr>
+                      </CSSTransition>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        style={{ ...styles.cell, textAlign: "center" }}
+                      >
+                        No users found
+                      </td>
+                    </tr>
+                  )}
+                </TransitionGroup>
+              </table>
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -90,12 +149,13 @@ const IndoorLocMuseum = () => {
       <div style={styles.righthalf}>
         <input style={styles.searchbar} placeholder="search" />
         <div style={styles.roomsContainer}>
-          <button style={styles.current}>Main hall</button>
-          <button style={styles.button}>room 1</button>
-          <button style={styles.button}>room 2</button>
-          <button style={styles.button}>room 3</button>
-          <button style={styles.button}>room 4</button>
-          <button style={styles.button}>room 5</button>
+          <button style={styles.button}>Main hall</button>
+          <button style={styles.button}>Arts Hall</button>
+          <button style={styles.button}>Arts Room</button>
+          <button style={styles.button}>Secretary Room</button>
+          <button style={styles.button}>Secretary Terase</button>
+          <button style={styles.button}>Conference Room</button>
+          <button style={styles.button}>Conference Terase</button>
         </div>
         <button style={styles.greenButton}>Add rooms</button>
         <button style={styles.greenButton}>Enable</button>
@@ -109,16 +169,16 @@ const IndoorLocMuseum = () => {
         <button style={styles.homeButton} onClick={handleHome}>
           Home
         </button>
-        <label style={styles.pagename}>{museum_name}</label>
+        <label style={styles.pagename}>{museumName}</label>
         <img
           style={styles.logoimage}
-          src={"./images/Logo.png"}
+          src={"../../images/Logo.png"}
           alt="first image"
         />
       </div>
       <div>
         <Lefthalf />
-        <Righthalf />
+        {museumName === "The Great Cairo Library" && <Righthalf />}
       </div>
       <div style={styles.Bottombar}></div>
     </div>
@@ -147,7 +207,7 @@ const styles = {
     border: "1px solid black",
   },
   button: {
-    height: "20px",
+    height: "25px",
     width: "90px",
     borderRadius: "10px",
     backgroundColor: "#979B99",
@@ -203,6 +263,7 @@ const styles = {
     height: "100px",
   },
   username: {
+    textAlign: "center",
     color: "#684326",
   },
   searchbar: {
@@ -236,48 +297,40 @@ const styles = {
     marginBottom: "5px",
     display: "flex",
     flexDirection: "row",
-    alignSelf: "center",
+    alignSelf: "center"
   },
   counters: {
-    width: "95%",
-    marginBottom: "5px",
     display: "flex",
     flexDirection: "row",
-    alignSelf: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
+    marginBottom: "10px",
   },
-  prices: {},
-  nameentry: {
-    width: "528px",
-  },
-  infoentry: {
-    width: "536px",
-    height: "auto",
-    marginLeft: "5px",
+  prices: {
+    fontWeight: "bold",
+    fontSize: "15px",
+    margin: "0 10px",
   },
   usersContainer: {
-    backgroundColor: "#D9D9D9",
-    height: "200px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
   },
-  Tourist: {
-    height: "20px",
-    width: "140px",
-    borderRadius: "8px",
-    backgroundColor: "#979B99",
-    color: "black",
-    margin: "5px",
-    fontSize: "10px",
-    border: "1px solid black",
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
   },
-  Tourguide: {
-    height: "20px",
-    width: "140px",
-    borderRadius: "8px",
-    backgroundColor: "#E0DDDD",
-    color: "black",
-    margin: "5px",
-    fontSize: "10px",
+  cell: {
     border: "1px solid black",
+    padding: "8px",
+    textAlign: "left",
+  },
+  centeredContent: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
 };
 
